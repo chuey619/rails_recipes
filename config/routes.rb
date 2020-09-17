@@ -1,14 +1,14 @@
 Rails.application.routes.draw do
-  namespace :api do
-    namespace :v1 do
+
       get 'recipes/index'
       post 'recipes', to: 'recipes#create'
       get 'recipes/show/:id', to: 'recipes#show'
       delete 'recipes/destroy/:id', to:'recipes#destroy' 
       put 'recipes/:id', to: 'recipes#update'
-      
-    end
-  end
+      post '/auth/login', to: 'sessions#create'
+      delete '/auth/logout', to: 'sessions#destroy'
+      resources :users
+
   
   root 'homepage#index'
   get '/*path' => 'homepage#index'

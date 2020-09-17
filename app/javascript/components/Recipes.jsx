@@ -7,7 +7,7 @@ const Recipes = (props) => {
     useEffect(() => {
         let fetchRecipes = async () => {
             try {
-                const url = '/api/v1/recipes/index'
+                const url = '/recipes/index'
                 let response = await fetch(url)
                 response = response.ok ? await response.json() : new Error('Network response was not ok.')
                 setRecipes(response)
@@ -42,7 +42,7 @@ const Recipes = (props) => {
     const noRecipe = (
         <div className="vw-100 vh-50 d-flex align-items-center justify-content-center">
             <h4>
-                No recipes yet. Why not <Link to="/new_recipe">create one</Link>
+                No recipes yet. Why not create one
             </h4>
         </div>
     );

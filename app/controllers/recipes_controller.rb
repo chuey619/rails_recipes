@@ -1,12 +1,14 @@
-class Api::V1::RecipesController < ApplicationController
+class RecipesController < ApiController
+  before_action :require_login, except: [:index, :show]
   def index
     recipe = Recipe.all.order(created_at: :desc)
     render json: recipe
   end
 
   def create
-    recipe = Recipe.create!(recipe_params)
-    if recipe
+    recipe = Recipe.new(recipe_params)
+    recipe.user = current_user
+    if recipe.save
       render json: recipe
     else
       render json: recipe.errors
@@ -16,7 +18,7 @@ class Api::V1::RecipesController < ApplicationController
   def show
     # recipe = Recipe.find(params[:id])
     if recipe
-      render json: recipe
+      render json: {recipe: recipe, user: recipe.user.username}
     else
       render json: recipe.errors
     end

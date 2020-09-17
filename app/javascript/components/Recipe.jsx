@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
+import Auth from '../modules/Auth'
 const Recipe = (props) => {
     const [recipe, setRecipe] = useState({})
+    const [user, setUser] = useState('')
     useEffect(() => {
         let fetchRecipe = async () => {
             try {
                 let id = parseInt(props.match.params.id)
-                const url = `/api/v1/recipes/show/${id}`
+                const url = `/recipes/show/${id}`
                 console.log(url)
                 let response = await fetch(url)
                 response = response.ok ? await response.json() : new Error('Network response was not ok.')
-                setRecipe(response)
+                setRecipe(response.recipe)
+                setUser(response.user)
             } catch {
                 props.history.push('/recipes')
             }
@@ -22,13 +24,15 @@ const Recipe = (props) => {
     const deleteRecipe = async () => {
         try {
             let id = parseInt(props.match.params.id)
-            const url = `/api/v1/recipes/destroy/${id}`
+            const url = `/recipes/destroy/${id}`
             const token = document.querySelector('meta[name="csrf-token"]').content;
             let response = await fetch(url, {
                 method: 'DELETE',
                 headers: {
                     'X-CSRF-Token': token,
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    token: Auth.getToken(),
+                    'Authorization': `Token ${Auth.getToken()}`
                 }
             })
             response = response.ok ? await response.json() : new Error('Network response was not ok.')
@@ -70,7 +74,7 @@ const Recipe = (props) => {
                 />
                 <div className="overlay bg-dark position-absolute" />
                 <h1 className="display-4 position-relative text-white">
-                    {recipe.name}
+                    {recipe.name} by {user}
                 </h1>
             </div>
             <div className="container py-5">

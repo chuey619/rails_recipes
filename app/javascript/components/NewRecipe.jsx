@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
+import Auth from '../modules/Auth'
 const NewRecipe = (props) => {
     const blankRecipe = { name: '', ingredients: '', instruction: '', image: '' }
     const [recipe, setRecipe] = useState({ ...blankRecipe })
@@ -18,14 +18,16 @@ const NewRecipe = (props) => {
     const onSubmit = async (evt) => {
         evt.preventDefault()
         let url;
-        method === 'PUT' ? url = `/api/v1/recipes/${props.location.state.recipe.id}` : url = '/api/v1/recipes'
+        method === 'PUT' ? url = `/recipes/${props.location.state.recipe.id}` : url = '/recipes'
         try {
             const token = document.querySelector('meta[name="csrf-token"]').content;
             let response = await fetch(url, {
                 method: method,
                 headers: {
                     'X-CSRF-Token': token,
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    token: Auth.getToken(),
+                    'Authorization': `Token ${Auth.getToken()}`
                 },
                 body: JSON.stringify(recipe)
             })
